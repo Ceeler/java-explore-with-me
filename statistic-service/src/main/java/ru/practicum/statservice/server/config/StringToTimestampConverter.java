@@ -14,11 +14,15 @@ public class StringToTimestampConverter implements Converter<String, LocalDateTi
     @Override
     public LocalDateTime convert(String source) {
         try {
-            String decoded = URLDecoder.decode(source, "UTF-8");
-            LocalDateTime result = LocalDateTime.parse(decoded, DATETIME_PATTERN);
-            return result;
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("Cannot decode string");
+            return LocalDateTime.parse(source, DATETIME_PATTERN);
+        } catch (Exception ex) {
+            try {
+                String decoded = URLDecoder.decode(source, "UTF-8");
+                LocalDateTime result = LocalDateTime.parse(decoded, DATETIME_PATTERN);
+                return result;
+            } catch (UnsupportedEncodingException e) {
+                throw new IllegalArgumentException("Cannot decode string");
+            }
         }
     }
 
