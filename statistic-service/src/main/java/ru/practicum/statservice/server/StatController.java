@@ -45,19 +45,4 @@ public class StatController {
         statService.addStat(dto);
         log.info("POST /hit Created 201");
     }
-
-    @GetMapping("/hit")
-    @ResponseStatus(HttpStatus.OK)
-    public void getStat() {
-        log.info("GET /hit =>");
-        statClient.getAll(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1), false,
-                "ewm/stat/1", "ewm/stat/2");
-        statClient.addHit("ewm", "stat/1", "127.0.0.1");
-        statClient.addHit("ewm", "stat/1", "127.0.0.1");
-        statClient.addHit("ewm", "stat/1", "127.0.0.1");
-        statClient.getAll(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1), false,
-                "stat/1", "stat/2");
-        log.info("GET /hit Created 201");
-    }
-
 }

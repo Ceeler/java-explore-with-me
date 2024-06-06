@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 public class StringToTimestampConverter implements Converter<String, LocalDateTime> {
 
-    private static final DateTimeFormatter DATETIME_PATTERN= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DATETIME_PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
     public LocalDateTime convert(String source) {

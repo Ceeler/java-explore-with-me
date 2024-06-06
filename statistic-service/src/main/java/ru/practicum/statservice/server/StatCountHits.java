@@ -9,10 +9,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StatCountHits {
 
-    private String app ;
+    private String app;
 
-    private String uri ;
+    private String uri;
 
-    private Long hits ;
+    private Long hits;
 
 }
