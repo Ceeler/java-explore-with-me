@@ -1,5 +1,27 @@
 version: '3.1'
 services:
+  ewm-db:
+    image: postgres:14-alpine
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ewm
+
+  ewm-service:
+    build: ./ewmmain-service
+    ports:
+      - "8080:8080"
+    environment:
+      - MAIN_HOST=ewm-db
+      - MAIN_PORT=5432
+      - MAIN_USER=postgres
+      - MAIN_PASS=postgres
+      - MAIN_DB=ewm
+    depends_on:
+      - ewm-db
+
   stats-db:
     image: postgres:14-alpine
     volumes:
@@ -19,12 +41,12 @@ services:
       - STAT_USER=postgres
       - STAT_PASS=postgres
       - STAT_DB=statistic
+      - SERVER_IP=ewm-service
+      - SERVER_PORT=8080
     depends_on:
       - stats-db
+      - ewm-service
 
-#  ewm-service:
-#    ports:
-#      - "8080:8080"
-#
-#  ewm-db:
-#    image: postgres:14-alpine
+
+
+

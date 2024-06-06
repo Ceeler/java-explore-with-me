@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.statservice.client.StatClient;
 import ru.practicum.statservice.dto.EndpointHit;
 import ru.practicum.statservice.dto.EndpointStat;
 
@@ -18,8 +17,6 @@ import java.util.List;
 public class StatController {
 
     private final StatService statService;
-
-    private final StatClient statClient;
 
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)

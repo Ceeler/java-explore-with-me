@@ -19,6 +19,7 @@
 
 	<modules>
 		<module>statistic-service</module>
+        <module>ewmmain-service</module>
 	</modules>
 
     <build>
