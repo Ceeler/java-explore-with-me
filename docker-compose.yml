@@ -37,8 +37,6 @@ services:
       - STAT_USER=postgres
       - STAT_PASS=postgres
       - STAT_DB=statistic
-      - SERVER_IP=ewm-service
-      - SERVER_PORT=8080
     depends_on:
       - stats-db
       - ewm-service
