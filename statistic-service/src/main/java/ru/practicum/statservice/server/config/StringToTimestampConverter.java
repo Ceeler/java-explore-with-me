@@ -9,20 +9,16 @@ import java.time.format.DateTimeFormatter;
 
 public class StringToTimestampConverter implements Converter<String, LocalDateTime> {
 
-    private static final DateTimeFormatter DATETIME_PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DATETIME_PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm[:ss]");
 
     @Override
     public LocalDateTime convert(String source) {
         try {
-            return LocalDateTime.parse(source, DATETIME_PATTERN);
-        } catch (Exception ex) {
-            try {
-                String decoded = URLDecoder.decode(source, "UTF-8");
-                LocalDateTime result = LocalDateTime.parse(decoded, DATETIME_PATTERN);
-                return result;
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalArgumentException("Cannot decode string");
-            }
+            String decoded = URLDecoder.decode(source, "UTF-8");
+            LocalDateTime result = LocalDateTime.parse(decoded, DATETIME_PATTERN);
+            return result;
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("Cannot decode string");
         }
     }
 
