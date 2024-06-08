@@ -1,15 +1,46 @@
 version: '3.1'
 services:
-  stats-server:
+  ewm-db:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ewm
+
+  ewm-service:
+    build: ./ewmmain-service
     ports:
-      - "9090:9090"
+      - "8080:8080"
+    environment:
+      - MAIN_HOST=ewm-db
+      - MAIN_PORT=5432
+      - MAIN_USER=postgres
+      - MAIN_PASS=postgres
+      - MAIN_DB=ewm
+    depends_on:
+      - ewm-db
 
   stats-db:
     image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=statistic
 
-  ewm-service:
+  stats-server:
+    build: ./statistic-service
     ports:
-      - "8080:8080"
+      - "9090:9090"
+    environment:
+      - STAT_HOST=stats-db
+      - STAT_PORT=5432
+      - STAT_USER=postgres
+      - STAT_PASS=postgres
+      - STAT_DB=statistic
+    depends_on:
+      - stats-db
+      - ewm-service
 
-  ewm-db:
-    image: postgres:14-alpine
+
+
+

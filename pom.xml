@@ -10,19 +10,19 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<name>Explore With Me</name>
-
 	<groupId>ru.practicum</groupId>
 	<artifactId>explore-with-me</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<properties>
-		<java.version>11</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<name>Explore With Me</name>
 
-	<build>
+	<modules>
+		<module>statistic-service</module>
+        <module>ewmmain-service</module>
+	</modules>
+
+    <build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -31,6 +31,11 @@
 					<configuration>
 						<systemPropertyVariables>
 							<spring.profiles.active>test</spring.profiles.active>
+							<STAT_HOST>localhost</STAT_HOST>
+							<STAT_PORT>5432</STAT_PORT>
+							<STAT_DB>postgres</STAT_DB>
+							<STAT_USER>postgres</STAT_USER>
+							<STAT_PASS>root</STAT_PASS>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>
