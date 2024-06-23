@@ -9,11 +9,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.statservice.dto.EndpointHit;
+import ru.practicum.statservice.dto.EndpointStat;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 public class StatClient {
 
@@ -28,7 +31,7 @@ public class StatClient {
                 .build();
     }
 
-    public ResponseEntity<Object> addHit(String app, String uri, String ip) {
+    public EndpointHit addHit(String app, String uri, String ip) {
         HttpEntity<EndpointHit> requestEntity = new HttpEntity<>(EndpointHit.builder()
                 .app(app)
                 .uri(uri)
@@ -37,22 +40,22 @@ public class StatClient {
                 .build());
 
         try {
-            ResponseEntity<Object> response = rest.exchange("/hit", HttpMethod.POST, requestEntity, Object.class);
-            return ResponseEntity.status(response.getStatusCode()).build();
+            ResponseEntity<EndpointHit> response = rest.exchange("/hit", HttpMethod.POST, requestEntity, EndpointHit.class);
+            return response.getBody();
         } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
+            throw new RuntimeException("Stat service is unavailable");
         }
     }
 
-    public ResponseEntity<Object> getAll(LocalDateTime start, LocalDateTime end, Boolean unique, String... uris)  {
+    public List<EndpointStat> getAll(LocalDateTime start, LocalDateTime end, Boolean unique, String... uris) {
         try {
             String startParam = URLEncoder.encode(start.format(formatter), "UTF-8");
             String endParam  = URLEncoder.encode(end.format(formatter),  "UTF-8");
-            ResponseEntity<Object> response = rest.exchange("/stats?start={start}&end={end}&uris={uris}&unique={unique}", HttpMethod.GET, null, Object.class,
+            ResponseEntity<EndpointStat[]> response = rest.exchange("/stats?start={start}&end={end}&uris={uris}&unique={unique}", HttpMethod.GET, null, EndpointStat[].class,
             startParam, endParam, uris, unique);
-            return ResponseEntity.status(response.getStatusCode()).build();
+            return Arrays.asList(response.getBody());
         } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
+            throw new RuntimeException("Stat service is unavailable");
         } catch (UnsupportedEncodingException e)  {
             throw new IllegalArgumentException("Unsupported encoding");
         }

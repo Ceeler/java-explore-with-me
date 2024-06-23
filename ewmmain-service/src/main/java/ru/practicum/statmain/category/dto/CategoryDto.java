@@ -1,4 +1,4 @@
-package ru.practicum.statservice.dto;
+package ru.practicum.statmain.category.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,14 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EndpointStat {
+@Builder
+public class CategoryDto {
 
-    private String app;
+    private Integer id;
 
-    private String uri;
-
-    private Integer hits;
+    private String name;
 }

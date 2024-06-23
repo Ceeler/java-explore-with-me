@@ -1,15 +1,16 @@
-package ru.practicum.statservice.server.exception;
+package ru.practicum.statmain.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class ExceptionMessage {
+public class UserShortDto {
 
-    private String error;
+    private Long id;
+
+    private String name;
 
 }
-

@@ -13,6 +13,5 @@ public class StatCountHits {
 
     private String uri;
 
-    private Long hits;
-
+    private Integer hits;
 }
