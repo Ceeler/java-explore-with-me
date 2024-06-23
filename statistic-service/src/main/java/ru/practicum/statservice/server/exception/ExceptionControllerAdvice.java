@@ -12,15 +12,15 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler({IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionMessage onIllegalArgumentException(final Throwable e) {
+    public ExceptionResponse onIllegalArgumentException(final Throwable e) {
         log.warn("400 {}", e.getMessage());
-        return new ExceptionMessage(e.getMessage());
+        return new ExceptionResponse(e.getMessage());
     }
 
     @ExceptionHandler({RuntimeException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionMessage handleThrowable(final Throwable e) {
+    public ExceptionResponse handleThrowable(final Throwable e) {
         log.warn("500 {}", e.getMessage());
-        return new ExceptionMessage(e.getMessage());
+        return new ExceptionResponse(e.getMessage());
     }
 }
