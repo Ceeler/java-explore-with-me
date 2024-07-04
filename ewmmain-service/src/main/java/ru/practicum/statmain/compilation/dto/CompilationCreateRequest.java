@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
@@ -17,6 +19,8 @@ public class CompilationCreateRequest {
 
     private boolean pinned;
 
+    @Size(min = 2, max = 50)
+    @NotBlank
     private String title;
 
 }

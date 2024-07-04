@@ -2,10 +2,7 @@ package ru.practicum.statmain.event;
 
 import ru.practicum.statmain.category.Category;
 import ru.practicum.statmain.category.CategoryMapper;
-import ru.practicum.statmain.event.dto.EventFullDto;
-import ru.practicum.statmain.event.dto.EventPatchDto;
-import ru.practicum.statmain.event.dto.EventPostDto;
-import ru.practicum.statmain.event.dto.EventShortDto;
+import ru.practicum.statmain.event.dto.*;
 import ru.practicum.statmain.event.enums.State;
 import ru.practicum.statmain.event.point.PointMapper;
 import ru.practicum.statmain.user.User;
@@ -40,8 +37,9 @@ public class EventMapper {
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toResponse(event.getCategory()))
-                .confirmedRequests(event.getRequests().size())
+                .confirmedRequests(event.getConfirmedRequests().size())
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
+                .eventDate(event.getEventDate())
                 .paid(event.getPaid())
                 .title(event.getTitle())
                 .views(event.getViews())
@@ -65,7 +63,7 @@ public class EventMapper {
                 .state(event.getState())
                 .category(CategoryMapper.toResponse(event.getCategory()))
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
-                .confirmedRequests(event.getRequests().size())
+                .confirmedRequests(event.getConfirmedRequests().size())
                 .createdOn(event.getCreatedOn())
                 .location(PointMapper.toDto(event.getPoint()))
                 .publishedOn(event.getPublishedOn())
@@ -73,7 +71,38 @@ public class EventMapper {
                 .build();
     }
 
-    public static void updateEntity(Event event, EventPatchDto dto) {
+    public static List<EventFullDto> toEventFullDto(List<Event> event) {
+        return event.stream().map(EventMapper::toEventFullDto).collect(Collectors.toList());
+    }
+
+    public static void updateEntity(Event event, EventUserPatchDto dto) {
+        if (dto.getTitle() != null) {
+            event.setTitle(dto.getTitle());
+        }
+        if (dto.getAnnotation() != null) {
+            event.setAnnotation(dto.getAnnotation());
+        }
+        if (dto.getDescription() != null) {
+            event.setDescription(dto.getDescription());
+        }
+        if (dto.getEventDate() != null) {
+            event.setEventDate(dto.getEventDate());
+        }
+        if (dto.getLocation() != null) {
+            event.setPoint(PointMapper.toEntity(dto.getLocation()));
+        }
+        if (dto.getParticipantLimit() != null) {
+            event.setParticipantLimit(dto.getParticipantLimit());
+        }
+        if (dto.getRequestModeration() != null) {
+            event.setRequestModeration(dto.getRequestModeration());
+        }
+        if (dto.getPaid() != null) {
+            event.setPaid(dto.getPaid());
+        }
+    }
+
+    public static void updateEntity(Event event, EventAdminPatchDto dto) {
         if (dto.getTitle() != null) {
             event.setTitle(dto.getTitle());
         }

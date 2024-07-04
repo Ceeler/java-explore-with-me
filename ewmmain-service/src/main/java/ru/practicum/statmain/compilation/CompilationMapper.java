@@ -1,6 +1,6 @@
 package ru.practicum.statmain.compilation;
 
-import ru.practicum.statmain.compilation.dto.CompilationResponse;
+import ru.practicum.statmain.compilation.dto.CompilationDto;
 import ru.practicum.statmain.event.EventMapper;
 
 import java.util.List;
@@ -11,8 +11,8 @@ public class CompilationMapper {
     private CompilationMapper() {
     }
 
-    public static CompilationResponse toDto(Compilation compilation) {
-        return CompilationResponse.builder()
+    public static CompilationDto toDto(Compilation compilation) {
+        return CompilationDto.builder()
                 .id(compilation.getId())
                 .title(compilation.getName())
                 .pinned(compilation.getPinned())
@@ -20,11 +20,11 @@ public class CompilationMapper {
                 .build();
     }
 
-    public static List<CompilationResponse> toDto(List<Compilation> compilation) {
+    public static List<CompilationDto> toDto(List<Compilation> compilation) {
         return compilation.stream().map(CompilationMapper::toDto).collect(Collectors.toList());
     }
 
-    public static Compilation toEntity(CompilationResponse dto) {
+    public static Compilation toEntity(CompilationDto dto) {
         return null;
     }
 

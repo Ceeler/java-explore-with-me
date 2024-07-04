@@ -4,13 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.statmain.event.Event;
 import ru.practicum.statmain.event.EventRepository;
-import ru.practicum.statmain.exception.BadRequestException;
+import ru.practicum.statmain.event.enums.State;
 import ru.practicum.statmain.exception.ConflictException;
 import ru.practicum.statmain.exception.NotFoundException;
 import ru.practicum.statmain.request.dto.RequestDto;
 import ru.practicum.statmain.request.dto.RequestPatchDto;
 import ru.practicum.statmain.request.dto.RequestPatchResultDto;
 import ru.practicum.statmain.request.enums.Status;
+import ru.practicum.statmain.user.User;
+import ru.practicum.statmain.user.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +25,10 @@ public class RequestService {
 
     private final EventRepository eventRepository;
 
+    private final UserRepository userRepository;
+
     public List<RequestDto> getUserEventRequests(Long userId, Long eventId) {
-        List<Request> requests = requestRepository.findAllByEvent_IdAndEvent_Initiator_Id(userId, eventId);
+        List<Request> requests = requestRepository.findAllByEvent_IdAndEvent_Initiator_Id(eventId, userId);
         return RequestMapper.toDto(requests);
     }
 
@@ -32,12 +36,14 @@ public class RequestService {
         Event event = eventRepository.findByIdAndInitiator_Id(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Event not found or you don't have access"));
 
-        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
-            throw new BadRequestException("Requests is not to be moderated");
-        }
-
         RequestPatchResultDto response = new RequestPatchResultDto();
         List<Request> requests = event.getRequests();
+
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
+            response.setConfirmedRequests(RequestMapper.toDto(requests));
+            return response;
+        }
+
         Status status = dto.getStatus();
         List<Request> confirmedRequests = new ArrayList<>();
         List<Request> pendingRequests = new ArrayList<>();
@@ -95,4 +101,55 @@ public class RequestService {
 
         return response;
     }
+
+    public List<RequestDto> getRequests(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        List<Request> requests = requestRepository.findAllByRequester_Id(userId);
+
+        return RequestMapper.toDto(requests);
+    }
+
+    public RequestDto createRequest(Long userId, Long eventId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        Event event = eventRepository.findByIdWithRequests(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
+
+        if (event.getInitiator().getId().equals(userId)) {
+            throw new ConflictException("You can't create request for your own event");
+        }
+
+        if (!event.getState().equals(State.PUBLISHED)) {
+            throw new ConflictException("Event is not published");
+        }
+
+        if (requestRepository.findByRequester_IdAndEvent_Id(userId, eventId).isPresent()) {
+            throw new ConflictException("You already have a request for this event");
+        }
+
+        if (event.getParticipantLimit() != 0 && event.getConfirmedRequests().size() >= event.getParticipantLimit()) {
+            throw new ConflictException("Event is full");
+        }
+
+        Request request = RequestMapper.toEntity(user, event);
+
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
+            request.setStatus(Status.CONFIRMED);
+        }
+
+        request = requestRepository.save(request);
+
+        return RequestMapper.toDto(request);
+    }
+
+    public RequestDto cancelRequest(Long userId, Long id) {
+        Request request = requestRepository.findByRequester_IdAndId(userId, id)
+                .orElseThrow(() -> new NotFoundException("Request not found"));
+
+        request.setStatus(Status.CANCELED);
+        requestRepository.save(request);
+
+        return RequestMapper.toDto(request);
+    }
+
 }

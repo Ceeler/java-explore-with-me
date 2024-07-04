@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "requests", schema = "ewm")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
@@ -37,7 +38,7 @@ public class Request {
     private User requester;
 
     @CreationTimestamp
-    @Column(name = "created_on", updatable = false)
+    @Column(name = "created_on")
     private LocalDateTime created;
 
     @Enumerated(EnumType.STRING)

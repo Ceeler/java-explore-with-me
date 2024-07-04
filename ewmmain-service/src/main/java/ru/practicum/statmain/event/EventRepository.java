@@ -15,10 +15,15 @@ public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPre
     @Query("SELECT e FROM Event e WHERE e.id IN :ids")
     List<Event> findByIds(List<Long> ids);
 
-    @EntityGraph(attributePaths = {"initiator", "category", "requests"})
+    @EntityGraph(attributePaths = {"initiator", "category", "confirmedRequests"})
     Page<Event> findByInitiator_Id(Long userId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"initiator", "category", "requests"})
+    @EntityGraph(attributePaths = {"initiator", "category", "confirmedRequests"})
     Optional<Event> findByIdAndInitiator_Id(Long eventId, Long userId);
+
+    @Query("SELECT e FROM Event e " +
+            "JOIN FETCH e.initiator " +
+            "WHERE e.id = :eventId")
+    Optional<Event> findByIdWithRequests(Long eventId);
 
 }

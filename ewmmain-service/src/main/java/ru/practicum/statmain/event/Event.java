@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.Where;
 import ru.practicum.statmain.category.Category;
 import ru.practicum.statmain.event.enums.State;
 import ru.practicum.statmain.request.Request;
@@ -59,7 +60,7 @@ public class Event {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "users_events",
+            name = "requests",
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
@@ -73,12 +74,18 @@ public class Event {
     private Point point;
 
     @CreationTimestamp
+    @Column(name = "created_on")
     private LocalDateTime createdOn;
 
     private LocalDateTime publishedOn;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "event")
     private List<Request> requests;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "event")
+    @Where(clause = "status = 'CONFIRMED'")
+    // Будет получаться отдельным запросом, т.к при FETCH запрос не правильно строится
+    private List<Request> confirmedRequests;
 
     @Transient
     private int views;
