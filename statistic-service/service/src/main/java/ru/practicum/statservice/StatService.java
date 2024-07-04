@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -19,16 +21,24 @@ public class StatService {
     }
 
     public List<EndpointStat> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique)  {
-        if (unique) {
-            if (uris.isEmpty())  {
-                return StatMapper.toDtoList(statRepository.getStatUnique(start, end));
-            }
-            return StatMapper.toDtoList(statRepository.getStatUniqueInList(start, end, uris));
-        }
-        if (uris.isEmpty())  {
-            return StatMapper.toDtoList(statRepository.getStat(start, end));
-        }
-        return StatMapper.toDtoList(statRepository.getStatInList(start, end, uris));
-    }
 
+        if (uris == null || uris.isEmpty()) {
+            if (unique) {
+                return StatMapper.toDtoList(statRepository.getStatUnique(start, end));
+            } else {
+                return StatMapper.toDtoList(statRepository.getStat(start, end));
+            }
+        } else {
+            List<StatCountHits> response = new ArrayList<>();
+            for (String uri : uris) {
+                if (unique) {
+                    response.addAll(statRepository.getStatUniqueLikeUri(start, end, "%" + uri.toLowerCase() + "%"));
+                } else {
+                    response.addAll(statRepository.getStatLikeUri(start, end, "%" + uri.toLowerCase() + "%"));
+                }
+            }
+            response.sort(Comparator.comparingLong(StatCountHits::getHits).reversed());
+            return StatMapper.toDtoList(response);
+        }
+    }
 }

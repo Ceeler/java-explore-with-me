@@ -21,15 +21,15 @@ public class StatController {
     public List<EndpointStat> getStat(
             @RequestParam("start") LocalDateTime start,
             @RequestParam("end") LocalDateTime end,
-            @RequestParam(value = "uris", defaultValue = "") List<String> uris,
+            @RequestParam(value = "uris", required = false) List<String> uris,
             @RequestParam(value = "unique", defaultValue = "false") Boolean unique
             ) {
-        log.info("GET /stats?start={}&end={}&unique={}", start, end, unique);
+        log.info("GET /stats?start={}&end={}&unique={}&uris={}", start, end, unique, uris);
         if (start.isAfter(end)) {
             throw new IllegalArgumentException("Start must be before end");
         }
         List<EndpointStat> response = statService.getStats(start, end, uris, unique);
-        log.info("GET /stats?start={}&end={}&unique={}  =>  {}", start, end, unique, response);
+        log.info("GET /stats?start={}&end={}&unique={}&uris={}=>  {}", start, end, unique, uris, response);
         return response;
     }
 

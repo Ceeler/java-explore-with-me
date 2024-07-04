@@ -25,17 +25,17 @@ public interface StatRepository extends JpaRepository<StatEntity, Long> {
     @Query("SELECT new ru.practicum.statservice.StatCountHits(e.app, e.uri, COUNT(e.uri)) " +
             "FROM StatEntity e " +
             "WHERE (e.timestamp BETWEEN :start AND :end) AND " +
-            "e.uri IN (:uris) " +
+            "e.uri LIKE LOWER(:uri) " +
             "GROUP BY e.app, e.uri " +
             "ORDER BY COUNT(e.uri) DESC")
-    List<StatCountHits> getStatInList(LocalDateTime start, LocalDateTime end, List<String> uris);
+    List<StatCountHits> getStatLikeUri(LocalDateTime start, LocalDateTime end, String uri);
 
     @Query("SELECT new ru.practicum.statservice.StatCountHits( e.app, e.uri, COUNT(DISTINCT e.uri)) " +
             "FROM StatEntity e " +
             "WHERE (e.timestamp BETWEEN :start AND :end) AND " +
-            "e.uri IN (:uris)" +
+            "e.uri LIKE LOWER(:uri) " +
             "GROUP BY e.app, e.uri " +
             "ORDER BY COUNT(e.uri) DESC")
-    List<StatCountHits> getStatUniqueInList(LocalDateTime start, LocalDateTime end, List<String> uris);
+    List<StatCountHits> getStatUniqueLikeUri(LocalDateTime start, LocalDateTime end, String uri);
 
 }
