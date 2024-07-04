@@ -64,9 +64,7 @@ public class CompilationService {
         }
 
         if (dto.getEvents() != null) {
-            if (dto.getEvents().isEmpty()) {
-
-            } else {
+            if (!dto.getEvents().isEmpty()) {
                 List<Event> events = eventRepository.findByIds(dto.getEvents());
                 if (events.size() != dto.getEvents().size()) {
                     throw new NotFoundException("Events not found");
