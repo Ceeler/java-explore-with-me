@@ -302,7 +302,10 @@ public class EventService {
         List<EndpointStat> stats = statClient.getAll(now.minusYears(1), now.plusYears(1), true, uris.keySet().toArray(new String[0]));
 
         for (EndpointStat stat : stats) {
-            uris.get(stat.getUri()).setViews(stat.getHits());
+            Event event = uris.get(stat.getUri());
+            if (event != null) {
+                event.setViews(stat.getHits());
+            }
         }
     }
 
@@ -314,10 +317,15 @@ public class EventService {
         Map<String, Event> uris = events.stream().collect(Collectors.toMap((event -> EVENTS_PATH + event.getId()), event -> event));
         LocalDateTime now = LocalDateTime.now();
 
-        List<EndpointStat> stats = statClient.getAll(now.minusYears(1), now.plusYears(1), true, uris.keySet().toArray(new String[0]));
+        String[] urisArray = uris.keySet().toArray(new String[0]);
+
+        List<EndpointStat> stats = statClient.getAll(now.minusYears(1), now.plusYears(1), true, urisArray);
 
         for (EndpointStat stat : stats) {
-            uris.get(stat.getUri()).setViews(stat.getHits());
+            Event event = uris.get(stat.getUri());
+            if (event != null) {
+                event.setViews(stat.getHits());
+            }
         }
     }
 
@@ -326,7 +334,7 @@ public class EventService {
         List<EndpointStat> stats = statClient.getAll(
                 rangeStart == null ? now.minusYears(1) : rangeStart,
                 rangeEnd == null ? now.plusYears(1) : rangeEnd,
-                true);
+                false);
         stats.sort(Comparator.comparing(EndpointStat::getHits).reversed());
         List<Long> ids = new ArrayList<>();
 
