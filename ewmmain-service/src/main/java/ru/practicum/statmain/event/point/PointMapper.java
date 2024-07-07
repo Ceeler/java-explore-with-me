@@ -8,13 +8,11 @@ public class PointMapper {
 
     }
 
-    ;
-
-    public static Event.Point toEntity(PointDto dto) {
+    public static Event.Point toEntity(PointResponseRequest dto) {
         return new Event.Point(dto.getLat(), dto.getLon());
     }
 
-    public static PointDto toDto(Event.Point dto) {
-        return new PointDto(dto.getLat(), dto.getLon());
+    public static PointResponseRequest toDto(Event.Point dto) {
+        return new PointResponseRequest(dto.getLat(), dto.getLon());
     }
 }

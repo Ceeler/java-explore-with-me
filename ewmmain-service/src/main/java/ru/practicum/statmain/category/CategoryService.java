@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.statmain.category.dto.CategoryCreateRequest;
-import ru.practicum.statmain.category.dto.CategoryDto;
+import ru.practicum.statmain.category.dto.CategoryResponse;
 import ru.practicum.statmain.exception.ConflictException;
 import ru.practicum.statmain.exception.NotFoundException;
 
@@ -16,7 +16,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryDto addCategory(CategoryCreateRequest request) {
+    public CategoryResponse addCategory(CategoryCreateRequest request) {
         checkName(request.getName());
         Category category = CategoryMapper.toEntity(request);
         categoryRepository.save(category);
@@ -31,7 +31,7 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    public CategoryDto updateCategory(Integer id, CategoryCreateRequest request) {
+    public CategoryResponse updateCategory(Integer id, CategoryCreateRequest request) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
         if (!request.getName().equals(category.getName())) {
             checkName(request.getName());
@@ -41,12 +41,12 @@ public class CategoryService {
         return CategoryMapper.toResponse(category);
     }
 
-    public CategoryDto getCategory(Integer id) {
+    public CategoryResponse getCategory(Integer id) {
         return CategoryMapper.toResponse(categoryRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Category not found")));
     }
 
-    public List<CategoryDto> getCategories(Integer from, Integer size) {
+    public List<CategoryResponse> getCategories(Integer from, Integer size) {
         return CategoryMapper.toResponse(categoryRepository.findAll(PageRequest.of(from / size, size)).getContent());
     }
 

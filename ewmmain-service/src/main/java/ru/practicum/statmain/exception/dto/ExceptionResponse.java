@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExceptionDto {
+public class ExceptionResponse {
 
     private String status;
 

@@ -51,7 +51,7 @@ public class EventService {
 
     private final UserRepository userRepository;
 
-    public EventFullDto addEvent(EventPostDto dto, Long userId) {
+    public EventFullResponse addEvent(EventPostRequest dto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
@@ -61,13 +61,10 @@ public class EventService {
         Event event = EventMapper.toEntity(dto, category, user);
         event = eventRepository.save(event);
 
-        event.setConfirmedRequests(new ArrayList<>());
-        event.setRequests(new ArrayList<>()); //To avoid null list
-
         return EventMapper.toEventFullDto(event);
     }
 
-    public List<EventShortDto> getUserEvents(Long userId, Integer from, Integer size) {
+    public List<EventShortResponse> getUserEvents(Long userId, Integer from, Integer size) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         Page<Event> eventPage = eventRepository.findByInitiator_Id(userId, PageRequest.of(from / size, size));
@@ -78,7 +75,7 @@ public class EventService {
         return EventMapper.toEventShortDto(events);
     }
 
-    public EventFullDto getUserEvent(Long userId, Long eventId) {
+    public EventFullResponse getUserEvent(Long userId, Long eventId) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         Event event = eventRepository.findByIdAndInitiator_Id(eventId, userId)
@@ -89,7 +86,7 @@ public class EventService {
         return EventMapper.toEventFullDto(event);
     }
 
-    public EventFullDto patchUserEvent(EventUserPatchDto dto, Long userId, Long eventId) {
+    public EventFullResponse patchUserEvent(EventUserPatchRequest dto, Long userId, Long eventId) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         Event event = eventRepository.findByIdAndInitiator_Id(eventId, userId)
@@ -126,9 +123,9 @@ public class EventService {
         return EventMapper.toEventFullDto(event);
     }
 
-    public List<EventFullDto> getAdminEvents(List<Long> users, List<Integer> categories, List<State> states,
-                                             LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                             Integer from, Integer size) {
+    public List<EventFullResponse> getAdminEvents(List<Long> users, List<Integer> categories, List<State> states,
+                                                  LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                  Integer from, Integer size) {
 
         BooleanExpression resultQuery = null;
 
@@ -165,7 +162,7 @@ public class EventService {
         return EventMapper.toEventFullDto(events);
     }
 
-    public EventFullDto patchAdminEvent(Long id, EventAdminPatchDto dto) {
+    public EventFullResponse patchAdminEvent(Long id, EventAdminPatchRequest dto) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event not found or you can't see this event"));
 
@@ -206,9 +203,9 @@ public class EventService {
         return EventMapper.toEventFullDto(event);
     }
 
-    public List<EventShortDto> getEvents(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart,
-                                         LocalDateTime rangeEnd, Boolean onlyAvailable, Sorting sort,
-                                         Integer from, Integer size, String ip) {
+    public List<EventShortResponse> getEvents(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart,
+                                              LocalDateTime rangeEnd, Boolean onlyAvailable, Sorting sort,
+                                              Integer from, Integer size, String ip) {
 
         BooleanExpression resultQuery = QEvent.event.state.eq(State.PUBLISHED);
 
@@ -270,7 +267,7 @@ public class EventService {
         return EventMapper.toEventShortDto(events);
     }
 
-    public EventFullDto getEvent(Long id, String ip) {
+    public EventFullResponse getEvent(Long id, String ip) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event not found"));
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new NotFoundException("Event not found");

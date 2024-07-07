@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.statmain.compilation.dto.CompilationCreateRequest;
-import ru.practicum.statmain.compilation.dto.CompilationDto;
 import ru.practicum.statmain.compilation.dto.CompilationPatchRequest;
+import ru.practicum.statmain.compilation.dto.CompilationResponse;
 import ru.practicum.statmain.event.Event;
 import ru.practicum.statmain.event.EventRepository;
 import ru.practicum.statmain.exception.ConflictException;
@@ -23,7 +23,7 @@ public class CompilationService {
 
     private final EventRepository eventRepository;
 
-    public CompilationDto addCompilation(CompilationCreateRequest request) {
+    public CompilationResponse addCompilation(CompilationCreateRequest request) {
         checkName(request.getTitle());
 
         List<Event> events = null;
@@ -55,7 +55,7 @@ public class CompilationService {
     }
 
 
-    public CompilationDto patchCompilation(Long id, CompilationPatchRequest dto) {
+    public CompilationResponse patchCompilation(Long id, CompilationPatchRequest dto) {
         Compilation compilation = compilationRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Compilation not found"));
 
@@ -86,12 +86,12 @@ public class CompilationService {
         return CompilationMapper.toDto(compilation);
     }
 
-    public List<CompilationDto> getCompilations(Integer from, Integer size, Boolean pinned) {
+    public List<CompilationResponse> getCompilations(Integer from, Integer size, Boolean pinned) {
         Page<Compilation> page = compilationRepository.findAllByPinned(PageRequest.of(from / size, size), pinned);
         return CompilationMapper.toDto(page.getContent());
     }
 
-    public CompilationDto getCompilation(Long id) {
+    public CompilationResponse getCompilation(Long id) {
         return CompilationMapper.toDto(compilationRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Compilation not found")));
     }

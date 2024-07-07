@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.statmain.category.dto.CategoryDto;
+import ru.practicum.statmain.category.dto.CategoryResponse;
 import ru.practicum.statmain.event.enums.State;
-import ru.practicum.statmain.event.point.PointDto;
-import ru.practicum.statmain.user.dto.UserShortDto;
+import ru.practicum.statmain.event.point.PointResponseRequest;
+import ru.practicum.statmain.user.dto.UserShortResponse;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Data
-public class EventFullDto {
+public class EventFullResponse {
 
     private Long id;
 
@@ -37,16 +37,16 @@ public class EventFullDto {
 
     private State state;
 
-    private CategoryDto category;
+    private CategoryResponse category;
 
-    private UserShortDto initiator;
+    private UserShortResponse initiator;
 
     private Integer confirmedRequests;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdOn;
 
-    private PointDto location;
+    private PointResponseRequest location;
 
     private LocalDateTime publishedOn;
 

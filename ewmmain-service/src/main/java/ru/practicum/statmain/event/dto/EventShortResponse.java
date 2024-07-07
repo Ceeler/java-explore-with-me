@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.statmain.category.dto.CategoryDto;
-import ru.practicum.statmain.user.dto.UserShortDto;
+import ru.practicum.statmain.category.dto.CategoryResponse;
+import ru.practicum.statmain.user.dto.UserShortResponse;
 
 import java.time.LocalDateTime;
 
@@ -14,20 +14,20 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventShortDto {
+public class EventShortResponse {
 
     private Long id;
 
     private String annotation;
 
-    private CategoryDto category;
+    private CategoryResponse category;
 
     private Integer confirmedRequests;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-    private UserShortDto initiator;
+    private UserShortResponse initiator;
 
     private Boolean paid;
 

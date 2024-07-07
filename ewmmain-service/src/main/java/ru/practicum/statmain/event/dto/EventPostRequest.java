@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.statmain.event.point.PointDto;
+import ru.practicum.statmain.event.point.PointResponseRequest;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventPostDto {
+public class EventPostRequest {
 
     @Size(min = 3, max = 120)
     @NotBlank
@@ -40,10 +40,9 @@ public class EventPostDto {
     private LocalDateTime eventDate;
 
     @NotNull
-    private PointDto location;
+    private PointResponseRequest location;
 
     @NotNull
     private Integer category;
-
 
 }

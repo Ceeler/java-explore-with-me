@@ -1,7 +1,7 @@
 package ru.practicum.statmain.request;
 
 import ru.practicum.statmain.event.Event;
-import ru.practicum.statmain.request.dto.RequestDto;
+import ru.practicum.statmain.request.dto.RequestResponse;
 import ru.practicum.statmain.request.enums.Status;
 import ru.practicum.statmain.user.User;
 
@@ -14,8 +14,8 @@ public class RequestMapper {
 
     }
 
-    public static RequestDto toDto(Request request) {
-        return RequestDto.builder()
+    public static RequestResponse toDto(Request request) {
+        return RequestResponse.builder()
                 .id(request.getId())
                 .event(request.getEvent().getId())
                 .requester(request.getRequester().getId())
@@ -24,17 +24,23 @@ public class RequestMapper {
                 .build();
     }
 
-    public static List<RequestDto> toDto(List<Request> requests) {
+    public static List<RequestResponse> toDto(List<Request> requests) {
         return requests.stream()
                 .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public static Request toEntity(User user, Event event) {
-        return Request.builder()
+        Request request = Request.builder()
                 .event(event)
                 .requester(user)
                 .status(Status.PENDING)
                 .build();
+
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
+            request.setStatus(Status.CONFIRMED);
+        }
+
+        return request;
     }
 }

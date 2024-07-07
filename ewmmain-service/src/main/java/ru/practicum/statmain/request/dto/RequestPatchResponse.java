@@ -11,10 +11,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestPatchResultDto {
+public class RequestPatchResponse {
 
-    List<RequestDto> confirmedRequests;
+    List<RequestResponse> confirmedRequests;
 
-    List<RequestDto> rejectedRequests;
+    List<RequestResponse> rejectedRequests;
 }
 

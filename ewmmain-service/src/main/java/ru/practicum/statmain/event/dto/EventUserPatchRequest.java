@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.statmain.event.enums.StateUserAction;
-import ru.practicum.statmain.event.point.PointDto;
+import ru.practicum.statmain.event.point.PointResponseRequest;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.PositiveOrZero;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventUserPatchDto {
+public class EventUserPatchRequest {
 
     @Size(min = 3, max = 120)
     private String title;
@@ -34,7 +34,7 @@ public class EventUserPatchDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-    private PointDto location;
+    private PointResponseRequest location;
 
     private Boolean paid;
 

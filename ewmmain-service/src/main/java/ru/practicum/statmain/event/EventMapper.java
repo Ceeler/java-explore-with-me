@@ -8,6 +8,7 @@ import ru.practicum.statmain.event.point.PointMapper;
 import ru.practicum.statmain.user.User;
 import ru.practicum.statmain.user.UserMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ public class EventMapper {
     private EventMapper() {
     }
 
-    public static Event toEntity(EventPostDto dto, Category category, User initiator) {
+    public static Event toEntity(EventPostRequest dto, Category category, User initiator) {
         return Event.builder()
                 .title(dto.getTitle())
                 .annotation(dto.getAnnotation())
@@ -27,13 +28,15 @@ public class EventMapper {
                 .eventDate(dto.getEventDate())
                 .point(PointMapper.toEntity(dto.getLocation()))
                 .state(State.PENDING)
+                .confirmedRequests(new ArrayList<>())
+                .requests(new ArrayList<>())
                 .initiator(initiator)
                 .category(category)
                 .build();
     }
 
-    public static EventShortDto toEventShortDto(Event event) {
-        return EventShortDto.builder()
+    public static EventShortResponse toEventShortDto(Event event) {
+        return EventShortResponse.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toResponse(event.getCategory()))
@@ -46,12 +49,12 @@ public class EventMapper {
                 .build();
     }
 
-    public static List<EventShortDto> toEventShortDto(List<Event> events) {
+    public static List<EventShortResponse> toEventShortDto(List<Event> events) {
         return events.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
 
-    public static EventFullDto toEventFullDto(Event event) {
-        return EventFullDto.builder()
+    public static EventFullResponse toEventFullDto(Event event) {
+        return EventFullResponse.builder()
                 .id(event.getId())
                 .title(event.getTitle())
                 .annotation(event.getAnnotation())
@@ -71,11 +74,11 @@ public class EventMapper {
                 .build();
     }
 
-    public static List<EventFullDto> toEventFullDto(List<Event> event) {
+    public static List<EventFullResponse> toEventFullDto(List<Event> event) {
         return event.stream().map(EventMapper::toEventFullDto).collect(Collectors.toList());
     }
 
-    public static void updateEntity(Event event, EventUserPatchDto dto) {
+    public static void updateEntity(Event event, EventUserPatchRequest dto) {
         if (dto.getTitle() != null) {
             event.setTitle(dto.getTitle());
         }
@@ -102,7 +105,7 @@ public class EventMapper {
         }
     }
 
-    public static void updateEntity(Event event, EventAdminPatchDto dto) {
+    public static void updateEntity(Event event, EventAdminPatchRequest dto) {
         if (dto.getTitle() != null) {
             event.setTitle(dto.getTitle());
         }

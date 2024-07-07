@@ -1,16 +1,17 @@
-package ru.practicum.statmain.user.dto;
+package ru.practicum.statmain.category.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserShortDto {
+@Builder
+public class CategoryResponse {
 
-    private Long id;
+    private Integer id;
 
     private String name;
-
 }

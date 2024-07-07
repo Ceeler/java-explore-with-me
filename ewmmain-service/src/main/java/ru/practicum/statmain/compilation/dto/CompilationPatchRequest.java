@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class CompilationPatchRequest {
 
-    List<Long> events;
+    private List<Long> events;
 
     private Boolean pinned;
 

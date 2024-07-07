@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class CompilationCreateRequest {
 
-    List<Long> events;
+    private List<Long> events;
 
     private boolean pinned;
 

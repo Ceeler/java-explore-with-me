@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.statmain.event.dto.EventShortDto;
+import ru.practicum.statmain.event.dto.EventShortResponse;
 
 import java.util.List;
 
@@ -12,11 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CompilationDto {
+public class CompilationResponse {
 
     private Long id;
 
-    List<EventShortDto> events;
+    private List<EventShortResponse> events;
 
     private boolean pinned;
 

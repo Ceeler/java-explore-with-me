@@ -1,7 +1,7 @@
 package ru.practicum.statmain.category;
 
 import ru.practicum.statmain.category.dto.CategoryCreateRequest;
-import ru.practicum.statmain.category.dto.CategoryDto;
+import ru.practicum.statmain.category.dto.CategoryResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,14 +17,14 @@ public class CategoryMapper {
                 .build();
     }
 
-    public static CategoryDto toResponse(Category category) {
-        return CategoryDto.builder()
+    public static CategoryResponse toResponse(Category category) {
+        return CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .build();
     }
 
-    public static List<CategoryDto> toResponse(List<Category> categories) {
+    public static List<CategoryResponse> toResponse(List<Category> categories) {
         return categories.stream()
                 .map(CategoryMapper::toResponse)
                 .collect(Collectors.toList());

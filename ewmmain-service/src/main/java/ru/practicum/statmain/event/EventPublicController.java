@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.statmain.event.dto.EventFullDto;
-import ru.practicum.statmain.event.dto.EventShortDto;
+import ru.practicum.statmain.event.dto.EventFullResponse;
+import ru.practicum.statmain.event.dto.EventShortResponse;
 import ru.practicum.statmain.event.enums.Sorting;
 import ru.practicum.statmain.exception.BadRequestException;
 
@@ -17,22 +17,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/events")
 @RequiredArgsConstructor
-public class EventController {
+public class EventPublicController {
 
     private final EventService eventService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
-                                         @RequestParam(required = false) List<Integer> categories,
-                                         @RequestParam(required = false) Boolean paid,
-                                         @RequestParam(required = false) LocalDateTime rangeStart,
-                                         @RequestParam(required = false) LocalDateTime rangeEnd,
-                                         @RequestParam(defaultValue = "false") Boolean onlyAvailable,
-                                         @RequestParam(required = false) String sortStr,
-                                         @RequestParam(defaultValue = "0") Integer from,
-                                         @RequestParam(defaultValue = "10") Integer size,
-                                         HttpServletRequest request) {
+    public List<EventShortResponse> getEvents(@RequestParam(required = false) String text,
+                                              @RequestParam(required = false) List<Integer> categories,
+                                              @RequestParam(required = false) Boolean paid,
+                                              @RequestParam(required = false) LocalDateTime rangeStart,
+                                              @RequestParam(required = false) LocalDateTime rangeEnd,
+                                              @RequestParam(defaultValue = "false") Boolean onlyAvailable,
+                                              @RequestParam(required = false) String sortStr,
+                                              @RequestParam(defaultValue = "0") Integer from,
+                                              @RequestParam(defaultValue = "10") Integer size,
+                                              HttpServletRequest request) {
         log.info("Получен запрос GET /events?text={}&categories={}&paid={}&rangeStart={}&rangeEnd={}" +
                         "&onlyAvailable={}&sort={}&from={}&size={}",
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sortStr, from, size);
@@ -49,7 +49,7 @@ public class EventController {
             sorting = Sorting.from(sortStr).orElseThrow(() -> new IllegalArgumentException("Invalid sort parameter"));
         }
 
-        List<EventShortDto> response = eventService.getEvents(text, categories, paid, rangeStart, rangeEnd,
+        List<EventShortResponse> response = eventService.getEvents(text, categories, paid, rangeStart, rangeEnd,
                 onlyAvailable, sorting, from, size, request.getRemoteAddr());
 
         log.info("Получен запрос GET /events?text={}&categories={}&paid={}&rangeStart={}&rangeEnd={}" +
@@ -61,9 +61,9 @@ public class EventController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request) {
+    public EventFullResponse getEvent(@PathVariable Long id, HttpServletRequest request) {
         log.info("Получен запрос GET /events/{}", id);
-        EventFullDto event = eventService.getEvent(id, request.getRemoteAddr());
+        EventFullResponse event = eventService.getEvent(id, request.getRemoteAddr());
         log.info("Получен запрос GET /events/{} body={}", id, request.getRemoteAddr());
         return event;
     }

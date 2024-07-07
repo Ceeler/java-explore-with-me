@@ -7,9 +7,9 @@ import ru.practicum.statmain.event.EventRepository;
 import ru.practicum.statmain.event.enums.State;
 import ru.practicum.statmain.exception.ConflictException;
 import ru.practicum.statmain.exception.NotFoundException;
-import ru.practicum.statmain.request.dto.RequestDto;
-import ru.practicum.statmain.request.dto.RequestPatchDto;
-import ru.practicum.statmain.request.dto.RequestPatchResultDto;
+import ru.practicum.statmain.request.dto.RequestPatchRequest;
+import ru.practicum.statmain.request.dto.RequestPatchResponse;
+import ru.practicum.statmain.request.dto.RequestResponse;
 import ru.practicum.statmain.request.enums.Status;
 import ru.practicum.statmain.user.User;
 import ru.practicum.statmain.user.UserRepository;
@@ -27,16 +27,16 @@ public class RequestService {
 
     private final UserRepository userRepository;
 
-    public List<RequestDto> getUserEventRequests(Long userId, Long eventId) {
+    public List<RequestResponse> getUserEventRequests(Long userId, Long eventId) {
         List<Request> requests = requestRepository.findAllByEvent_IdAndEvent_Initiator_Id(eventId, userId);
         return RequestMapper.toDto(requests);
     }
 
-    public RequestPatchResultDto patchUserEventRequests(RequestPatchDto dto, Long userId, Long eventId) {
+    public RequestPatchResponse patchUserEventRequests(RequestPatchRequest dto, Long userId, Long eventId) {
         Event event = eventRepository.findByIdAndInitiator_Id(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Event not found or you don't have access"));
 
-        RequestPatchResultDto response = new RequestPatchResultDto();
+        RequestPatchResponse response = new RequestPatchResponse();
         List<Request> requests = event.getRequests();
 
         if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
@@ -102,7 +102,7 @@ public class RequestService {
         return response;
     }
 
-    public List<RequestDto> getRequests(Long userId) {
+    public List<RequestResponse> getRequests(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         List<Request> requests = requestRepository.findAllByRequester_Id(userId);
@@ -110,7 +110,7 @@ public class RequestService {
         return RequestMapper.toDto(requests);
     }
 
-    public RequestDto createRequest(Long userId, Long eventId) {
+    public RequestResponse createRequest(Long userId, Long eventId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         Event event = eventRepository.findByIdWithRequests(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
@@ -133,16 +133,12 @@ public class RequestService {
 
         Request request = RequestMapper.toEntity(user, event);
 
-        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
-            request.setStatus(Status.CONFIRMED);
-        }
-
         request = requestRepository.save(request);
 
         return RequestMapper.toDto(request);
     }
 
-    public RequestDto cancelRequest(Long userId, Long id) {
+    public RequestResponse cancelRequest(Long userId, Long id) {
         Request request = requestRepository.findByRequester_IdAndId(userId, id)
                 .orElseThrow(() -> new NotFoundException("Request not found"));
 

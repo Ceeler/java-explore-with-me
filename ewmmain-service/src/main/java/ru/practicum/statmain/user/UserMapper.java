@@ -2,7 +2,7 @@ package ru.practicum.statmain.user;
 
 import ru.practicum.statmain.user.dto.UserCreateRequest;
 import ru.practicum.statmain.user.dto.UserResponse;
-import ru.practicum.statmain.user.dto.UserShortDto;
+import ru.practicum.statmain.user.dto.UserShortResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,8 +33,8 @@ public class UserMapper {
                 .collect(Collectors.toList());
     }
 
-    public static UserShortDto toUserShortDto(User user) {
-        return new UserShortDto(user.getId(), user.getName());
+    public static UserShortResponse toUserShortDto(User user) {
+        return new UserShortResponse(user.getId(), user.getName());
     }
 
 }

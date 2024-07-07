@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PointDto {
+public class PointResponseRequest {
 
     @NotNull
     private Double lat;
