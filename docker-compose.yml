@@ -7,19 +7,6 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=ewm
 
-  ewm-service:
-    build: ./ewmmain-service
-    ports:
-      - "8080:8080"
-    environment:
-      - MAIN_HOST=ewm-db
-      - MAIN_PORT=5432
-      - MAIN_USER=postgres
-      - MAIN_PASS=postgres
-      - MAIN_DB=ewm
-    depends_on:
-      - ewm-db
-
   stats-db:
     image: postgres:14-alpine
     environment:
@@ -39,7 +26,24 @@ services:
       - STAT_DB=statistic
     depends_on:
       - stats-db
-      - ewm-service
+
+  ewm-service:
+    build: ./ewmmain-service
+    ports:
+      - "8080:8080"
+    environment:
+      - MAIN_HOST=ewm-db
+      - MAIN_PORT=5432
+      - MAIN_USER=postgres
+      - MAIN_PASS=postgres
+      - MAIN_DB=ewm
+      - SERVER_IP=stats-server
+      - SERVER_HOST=9090
+    depends_on:
+      - ewm-db
+      - stats-server
+
+
 
 
 
