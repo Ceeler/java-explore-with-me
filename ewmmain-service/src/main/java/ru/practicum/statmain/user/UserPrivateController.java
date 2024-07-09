@@ -13,6 +13,7 @@ import ru.practicum.statmain.request.RequestService;
 import ru.practicum.statmain.request.dto.RequestPatchRequest;
 import ru.practicum.statmain.request.dto.RequestPatchResponse;
 import ru.practicum.statmain.request.dto.RequestResponse;
+import ru.practicum.statmain.user.dto.UserShortResponse;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,6 +27,8 @@ public class UserPrivateController {
     private final EventService eventService;
 
     private final RequestService requestService;
+
+    private final UserService userService;
 
     @PostMapping("/{id}/events")
     @ResponseStatus(HttpStatus.CREATED)
@@ -112,4 +115,55 @@ public class UserPrivateController {
         return response;
     }
 
+    @GetMapping("/{userId}/subscriptions")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserShortResponse> getUserSubscriptions(@PathVariable Long userId) {
+        log.info("Получен запрос GET /users/{}/subscriptions", userId);
+        List<UserShortResponse> response = userService.getUserSubscriptions(userId);
+        log.info("Ответ отправлен на запрос GET /users/{}/subscriptions body={}", userId, response.size());
+        return response;
+    }
+
+    @PostMapping("/{userId}/subscribe/{subscribedOnId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<UserShortResponse> subscribe(@PathVariable Long userId, @PathVariable Long subscribedOnId) {
+        log.info("Получен запрос POST /users/{}/subscribe/{}", userId, subscribedOnId);
+        List<UserShortResponse> response = userService.subscribe(userId, subscribedOnId);
+        log.info("Ответ отправлен на запрос POST /users/{}/subscribe/{}", userId, subscribedOnId);
+        return response;
+    }
+
+    @GetMapping("/{userId}/subscribers")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserShortResponse> getUserSubscribers(@PathVariable Long userId) {
+        log.info("Получен запрос GET /users/{}/subscribers", userId);
+        List<UserShortResponse> response = userService.getUserSubscribers(userId);
+        log.info("Ответ отправлен на запрос GET /users/{}/subscribers body={}", userId, response.size());
+        return response;
+    }
+
+    @GetMapping("/{userId}/subscriptions/{subscribedOnId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventShortResponse> getSubscriptionEvent(@PathVariable Long userId, @PathVariable Long subscribedOnId) {
+        log.info("Получен запрос GET /users/{}/subscriptions/{}", userId, subscribedOnId);
+        List<EventShortResponse> response = userService.getSubscriberEvent(userId, subscribedOnId);
+        log.info("Ответ отправлен на запрос GET /users/{}/subscriptions/{} body={}", userId, subscribedOnId, response.size());
+        return response;
+    }
+
+    @DeleteMapping("/{userId}/subscribers/{subscriberId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserSubscriber(@PathVariable Long userId, @PathVariable Long subscriberId) {
+        log.info("Получен запрос DELETE /users/{}/subscriptions/{}", userId, subscriberId);
+        userService.deleteSubscriber(userId, subscriberId);
+        log.info("Ответ отправлен на запрос DELETE /users/{}/subscriptions/{}", userId, subscriberId);
+    }
+
+    @DeleteMapping("/{userId}/subscriptions/{subscribedId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unsubscribe(@PathVariable Long userId, @PathVariable Long subscribedId) {
+        log.info("Получен запрос DELETE /users/{}/subscriptions/{}", userId, subscribedId);
+        userService.unsubscribe(userId, subscribedId);
+        log.info("Ответ отправлен на запрос DELETE /users/{}/subscriptions/{}", userId, subscribedId);
+    }
 }
