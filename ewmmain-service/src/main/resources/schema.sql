@@ -62,3 +62,11 @@ CREATE TABLE IF NOT EXISTS ewm.requests
     created_on TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS ewm.subscriptions
+(
+    user_id       BIGINT NOT NULL,
+    subscriber_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, subscriber_id),
+    FOREIGN KEY (user_id) REFERENCES ewm.users (id),
+    FOREIGN KEY (subscriber_id) REFERENCES ewm.users (id)
+)

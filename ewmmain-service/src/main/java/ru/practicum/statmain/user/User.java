@@ -26,4 +26,26 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Request> requests;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "subscriptions",
+            schema = "ewm",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<User> subscribers;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "subscriptions",
+            schema = "ewm",
+            joinColumns = @JoinColumn(name = "subscriber_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<User> subscriptions;
 }
